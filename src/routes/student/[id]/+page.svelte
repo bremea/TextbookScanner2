@@ -12,18 +12,6 @@
 	<div class="space-y-4">
 		<h1 class="font-bold text-2xl">Brett Meadows</h1>
 		<p>ID: {data.id}</p>
-		<div class="py-2 px-4 w-full bg-red-100 flex">
-			<span class="font-bold text-red-500 flex items-center mr-1">
-				<Close class="h-6 w-6 mr-2" /><span>Error:</span>
-			</span>
-			Textbook not found. Is the barcode correct?
-		</div>
-		<div class="py-2 px-4 w-full bg-green-100 flex">
-			<span class="font-bold text-green-600 flex items-center mr-1">
-				<Check class="h-6 w-6 mr-2" /><span>Returned:</span>
-			</span>
-			<span class="mx-1">AP United States Government Textbook</span>
-		</div>
 		<div class="flex space-x-2">
 			<Input placeholder="Textbook barcode..." />
 			<Button class="w-min">Return</Button>
