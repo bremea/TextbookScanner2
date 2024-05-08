@@ -1,7 +1,7 @@
 <script lang="ts">
 	export let placeholder = 'Type here';
 	let bindValue: string = '';
-	export let bindTo: HTMLInputElement;
+	export let bindTo: HTMLInputElement | null = null;
 	export let autocomplete: string = '';
 	export let autofocus = false;
 	export let onInput = () => {};

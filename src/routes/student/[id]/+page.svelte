@@ -9,6 +9,7 @@
 	import ArrowLeft from 'svelte-material-icons/ArrowLeft.svelte';
 	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
+	import Loader from '$lib/components/misc/Loader.svelte';
 
 	export let data: { id: string };
 	export let student: Student;
@@ -112,7 +113,9 @@
 </script>
 
 {#if loading}
-	<p>loading</p>
+	<div class="w-screen h-screen flex items-center justify-center">
+		<Loader />
+	</div>
 {:else}
 	{#if selectedTextbook}
 		<Popup close={() => (selectedTextbook = undefined)}>
