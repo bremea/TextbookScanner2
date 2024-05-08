@@ -2,7 +2,7 @@ import { verifyToken } from '$lib/server/authentication.js';
 import { pool } from '$lib/server/database.js';
 import { error, json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
-import type { RowDataPacket } from 'mysql2/promise';
+import type { StudentData } from '$lib/types';
 
 export const GET: RequestHandler = async ({ request, url }) => {
 	if (!verifyToken(request.headers)) {
@@ -13,9 +13,7 @@ export const GET: RequestHandler = async ({ request, url }) => {
 	const lastName = url.searchParams.get('lastName');
 
 	if (id) {
-		const [results] = await pool.query<RowDataPacket[]>('SELECT * FROM students WHERE id = ?', [
-			id
-		]);
+		const [results] = await pool.query<StudentData[]>('SELECT * FROM students WHERE id = ?', [id]);
 
 		if (results.length == 0) {
 			return error(404, `No student found with ID ${id}`);
@@ -27,7 +25,7 @@ export const GET: RequestHandler = async ({ request, url }) => {
 			return error(400, 'Missing id or last name');
 		}
 
-		const [results] = await pool.query<RowDataPacket[]>(
+		const [results] = await pool.query<StudentData[]>(
 			'SELECT * FROM students WHERE LOWER(lastName) = LOWER(?)',
 			[lastName]
 		);
