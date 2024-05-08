@@ -2,9 +2,9 @@ import { env } from '$env/dynamic/private';
 import type { TokenData } from '$lib/types.js';
 import { error, json } from '@sveltejs/kit';
 import jwt from 'jsonwebtoken';
+import type { RequestHandler } from './$types';
 
-/** @type {import('./$types').RequestHandler} */
-export async function POST({ request }) {
+export const POST: RequestHandler = async ({ request }) => {
 	const { name, password } = await request.json();
 
 	if (password != env.PASSWORD) {
