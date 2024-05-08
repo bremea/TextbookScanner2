@@ -10,7 +10,7 @@
 
 <div class="flex items-center justify-center h-screen w-screen">
 	<div class="space-y-4">
-		<h1 class="font-bold text-2xl">Brett Meadows</h1>
+		<h1 class="font-bold text-2xl">{data.firstName} {data.lastName}</h1>
 		<p>ID: {data.id}</p>
 		<div class="flex space-x-2">
 			<Input placeholder="Textbook barcode..." />
