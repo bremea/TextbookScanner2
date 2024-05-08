@@ -9,6 +9,19 @@
 	export let data: Student;
 
 	let selectedTextbook: Textbook | undefined;
+
+	const updateSelected = () => {
+		const status = selectedTextbook!.status[selectedTextbook!.status.length - 1].returned;
+		updateStatus(!status, selectedTextbook!.barcode!);
+	};
+
+	const updateStatus = async (status: boolean, barcode: number) => {
+		const req = await fetch('/api/textbook/return', {
+			method: 'POST',
+			body: JSON.stringify({ status, barcode, studentId: data.id }),
+			headers: { Authentication: localStorage.getItem('token')! }
+		});
+	};
 </script>
 
 {#if selectedTextbook}
@@ -64,7 +77,7 @@
 			</p>
 
 			<div class="my-4 w-full flex items-center justify-center">
-				<Button class="flex justify-center w-[400px]">
+				<Button class="flex justify-center w-[400px]" onClick={updateSelected}>
 					<span class="mr-0.5">Manually mark as</span>
 					{#if selectedTextbook.status[selectedTextbook.status.length - 1].returned}
 						<span class="font-bold text-red-500 flex items-center justify-center text-center">
@@ -123,12 +136,7 @@
 							<a
 								class="text-blue-600 underline hover:no-underline"
 								href="#info"
-								on:click={() => {
-									selectedTextbook = textbook;
-									console.log(
-										selectedTextbook.status[selectedTextbook.status.length - 1].updateTime
-									);
-								}}
+								on:click={() => (selectedTextbook = textbook)}
 							>
 								{textbook.name}
 							</a>
