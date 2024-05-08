@@ -20,11 +20,11 @@ export const GET: RequestHandler = async ({ request, params }) => {
 	}
 
 	const [studentResults] = await pool.query<StudentData[]>('SELECT * FROM students WHERE id = ?', [
-		params.id
+		params.studentId
 	]);
 
 	if (studentResults.length == 0) {
-		return error(404, `No student found with ID ${params.id}`);
+		return error(404, `No student found with ID ${params.studentId}`);
 	}
 
 	const studentData = studentResults[0];
@@ -32,7 +32,7 @@ export const GET: RequestHandler = async ({ request, params }) => {
 
 	const [courseResults] = await pool.query<StudentCourses[]>(
 		'SELECT * FROM studentCourses WHERE studentId = ?',
-		[params.id]
+		[params.studentId]
 	);
 
 	for (const studentCourse of courseResults) {
@@ -54,14 +54,14 @@ export const GET: RequestHandler = async ({ request, params }) => {
 		for (const individualTextbookData of textbookData) {
 			const [textbookStatusData] = await pool.query<StudentTextbookStatusData[]>(
 				'SELECT * FROM studentTextbooks WHERE studentId = ? AND textbookId = ? ORDER BY updateTime DESC',
-				[params.id, individualTextbookData.id]
+				[params.studentId, individualTextbookData.id]
 			);
 
 			const textbookStatus: StudentTextbookStatusData =
 				textbookStatusData.length > 0
 					? textbookStatusData[0]
 					: ({
-							studentId: parseInt(params.id),
+							studentId: parseInt(params.studentId),
 							textbookId: individualTextbookData.id,
 							returned: 0,
 							scanner: 'SERVER',

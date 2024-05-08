@@ -57,9 +57,8 @@ export interface TokenData {
 }
 
 export interface ReturnRequest {
-	studentId: number;
-	barcode: number;
 	status: boolean;
+	barcode: number;
 }
 
 export interface MiddlewareError {

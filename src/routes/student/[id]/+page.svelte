@@ -6,6 +6,7 @@
 	import type { Student, StudentTextbookStatus, Textbook } from '$lib/types';
 	import Check from 'svelte-material-icons/Check.svelte';
 	import Close from 'svelte-material-icons/Close.svelte';
+	import { onMount } from 'svelte';
 
 	export let data: Student;
 
@@ -13,36 +14,85 @@
 
 	let selectedTextbook: Textbook | undefined;
 	let selectedTextbookStatuses: StudentTextbookStatus[] = [];
+	let barcode: string = '';
+	let barcodeEntry: HTMLInputElement;
 
 	const updateSelected = () => {
 		const status = selectedTextbook!.status.returned;
-		updateStatus(!status, selectedTextbook!.barcode!);
+		updateStatus(selectedTextbook!.id, !status);
 	};
 
-	const fetchReturnLog = async (id: number) => {
-		const req = await fetch(`/api/textbook/${id}/log?studentId=${data.id}`, {
+	const fetchReturnLog = async (id: number): Promise<boolean> => {
+		const req = await fetch(`/api/student/${data.id}/textbooks/${id}/log?studentId=${data.id}`, {
 			headers: { Authorization: localStorage.getItem('token')! }
 		});
 
 		if (req.status == 200) {
 			selectedTextbookStatuses = await req.json();
+			return true;
+		} else {
+			error = await req.text();
+			return false;
+		}
+	};
+
+	const openTextbookDetails = async (textbook: Textbook) => {
+		const res = await fetchReturnLog(textbook.id);
+		if (res) selectedTextbook = textbook;
+	};
+
+	const refreshData = async () => {
+		const req = await fetch(`/api/student/${data.id}`, {
+			headers: { Authorization: localStorage.getItem('token')! }
+		});
+
+		if (req.status == 200) {
+			data = await req.json();
 		} else {
 			error = await req.text();
 		}
 	};
 
-	const openTextbookDetails = async (textbook: Textbook) => {
-		await fetchReturnLog(textbook.id);
-		selectedTextbook = textbook;
-	};
-
-	const updateStatus = async (status: boolean, barcode: number) => {
-		const req = await fetch('/api/textbook/return', {
-			method: 'POST',
-			body: JSON.stringify({ status, barcode, studentId: data.id }),
+	const updateStatus = async (id: number, status: boolean) => {
+		const req = await fetch(`/api/student/${data.id}/textbooks/${id}/return`, {
+			method: 'PATCH',
+			body: JSON.stringify({ studentId: data.id, status }),
 			headers: { Authorization: localStorage.getItem('token')! }
 		});
+
+		if (req.status == 200) {
+			selectedTextbook = undefined;
+			refreshData();
+		} else {
+			error = await req.text();
+		}
 	};
+
+	const fetchTextbook = async () => {
+		const req = await fetch(`/api/student/${data.id}/textbooks/lookup?barcode=${barcode}`, {
+			method: 'GET',
+			headers: { Authorization: localStorage.getItem('token')! }
+		});
+
+		barcode = '';
+
+		if (req.status == 200) {
+			const textbook = (await req.json()) as Textbook;
+			updateStatus(textbook.id, !textbook.status.returned);
+		} else {
+			error = (await req.json()).message;
+		}
+	};
+
+	const processBarcodeInput = () => {
+		if (barcode.length >= 13) {
+			fetchTextbook();
+		}
+	};
+
+	onMount(() => {
+		barcodeEntry.focus();
+	});
 </script>
 
 {#if selectedTextbook}
@@ -135,10 +185,13 @@
 		{#if error != undefined}
 			<Error>{error}</Error>
 		{/if}
-		<div class="flex space-x-2">
-			<Input placeholder="Textbook barcode..." />
-			<Button class="w-min">Update</Button>
-		</div>
+		<Input
+			placeholder="Enter barcode..."
+			bindTo={barcodeEntry}
+			autofocus
+			onInput={processBarcodeInput}
+			bind:value={barcode}
+		/>
 		<table class="w-[900px]">
 			<tr class="border-gray-500 border-b">
 				<th class="text-left px-4 py-2">Title</th>

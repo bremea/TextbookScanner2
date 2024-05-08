@@ -1,7 +1,10 @@
 <script lang="ts">
 	export let placeholder = 'Type here';
 	let bindValue: string = '';
+	export let bindTo: HTMLInputElement;
 	export let autocomplete: string = '';
+	export let autofocus = false;
+	export let onInput = () => {};
 	export { bindValue as value };
 </script>
 
@@ -11,4 +14,7 @@
 	type="text"
 	{autocomplete}
 	bind:value={bindValue}
+	bind:this={bindTo}
+	{autofocus}
+	on:input={onInput}
 />
