@@ -11,9 +11,16 @@
 	let error: undefined | string;
 
 	const lookup = async () => {
-		const req = await fetch('/api/lookup', {
-			method: 'POST',
-			body: JSON.stringify({ id })
+		let url = '/api/lookup?id=' + id;
+		if (id == null || id == undefined || id.length == 0) {
+			url = '/api/lookup?lastName=' + lastName;
+		}
+
+		const req = await fetch(url, {
+			method: 'GET',
+			headers: {
+				Authentication: localStorage.getItem('token')!
+			}
 		});
 
 		if (req.status == 200) {
@@ -33,6 +40,6 @@
 		<Number max={999999} placeholder="Student ID" bind:value={id} />
 		<p class="w-full opacity-50 text-center text-sm my-2">or</p>
 		<Input placeholder="Student last name" bind:value={lastName} />
-		<Button>Lookup</Button>
+		<Button onClick={lookup}>Lookup</Button>
 	</div>
 </div>
