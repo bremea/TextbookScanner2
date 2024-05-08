@@ -1,11 +1,11 @@
 <script lang="ts">
 	import Button from '$lib/components/input/Button.svelte';
 	import Input from '$lib/components/input/Input.svelte';
-	import type { StudentData } from '$lib/types';
+	import type { Student } from '$lib/types';
 	import Check from 'svelte-material-icons/Check.svelte';
 	import Close from 'svelte-material-icons/Close.svelte';
 
-	export let data: StudentData;
+	export let data: Student;
 </script>
 
 <div class="flex items-center justify-center h-screen w-screen">
