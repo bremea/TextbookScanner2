@@ -9,6 +9,7 @@ import type {
 	StudentCourses,
 	StudentData,
 	StudentTextbookStatus,
+	StudentTextbookStatusData,
 	Textbook,
 	TextbookData
 } from '$lib/types';
@@ -51,25 +52,28 @@ export const GET: RequestHandler = async ({ request, params }) => {
 		const textbooks: Textbook[] = [];
 
 		for (const individualTextbookData of textbookData) {
-			const [textbookStatusData] = await pool.query<StudentTextbookStatus[]>(
-				'SELECT * FROM studentTextbooks WHERE studentId = ? AND textbookId = ?',
+			const [textbookStatusData] = await pool.query<StudentTextbookStatusData[]>(
+				'SELECT * FROM studentTextbooks WHERE studentId = ? AND textbookId = ? ORDER BY updateTime',
 				[params.id, individualTextbookData.id]
 			);
 
-			const textbookStatus: StudentTextbookStatus[] =
+			const textbookStatus: StudentTextbookStatusData =
 				textbookStatusData.length > 0
-					? textbookStatusData
-					: [
-							{
-								studentId: parseInt(params.id),
-								textbookId: individualTextbookData.id,
-								returned: false,
-								scanner: 'SERVER',
-								updateTime: new Date().toString()
-							} as StudentTextbookStatus
-						];
+					? textbookStatusData[0]
+					: ({
+							studentId: parseInt(params.id),
+							textbookId: individualTextbookData.id,
+							returned: 0,
+							scanner: 'SERVER',
+							updateTime: new Date().toString()
+						} as StudentTextbookStatusData);
 
-			textbooks.push({ status: textbookStatus, ...individualTextbookData });
+			const fixedStatus: StudentTextbookStatus = {
+				...textbookStatus,
+				returned: textbookStatus.returned == 1
+			};
+
+			textbooks.push({ status: fixedStatus, ...individualTextbookData });
 		}
 
 		const course: Course = { textbooks, ...courseData[0] };

@@ -21,7 +21,7 @@
 		const req = await fetch(url, {
 			method: 'GET',
 			headers: {
-				Authentication: localStorage.getItem('token')!
+				Authorization: localStorage.getItem('token')!
 			}
 		});
 

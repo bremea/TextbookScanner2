@@ -3,7 +3,7 @@ import { env } from '$env/dynamic/private';
 import type { MiddlewareError, TokenData } from '$lib/types';
 
 export const getTokenData = (headers: Headers): MiddlewareError | TokenData => {
-	if (!headers.get('Authentication')) {
+	if (!headers.get('Authorization')) {
 		return {
 			code: 403,
 			message: 'Missing token'
@@ -11,7 +11,7 @@ export const getTokenData = (headers: Headers): MiddlewareError | TokenData => {
 	}
 
 	try {
-		return jwt.verify(headers.get('Authentication')!, env.JWT_SECRET as string) as TokenData;
+		return jwt.verify(headers.get('Authorization')!, env.JWT_SECRET as string) as TokenData;
 	} catch (e) {
 		return {
 			code: 403,
@@ -21,7 +21,7 @@ export const getTokenData = (headers: Headers): MiddlewareError | TokenData => {
 };
 
 export const verifyToken = (headers: Headers): boolean => {
-	if (!headers.get('Authentication')) {
+	if (!headers.get('Authorization')) {
 		return false;
 	}
 
