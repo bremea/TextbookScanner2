@@ -7,10 +7,12 @@
 	if (loading) disabled = true;
 	let classAddon: string = "";
 	export { classAddon as class };
+
+	const baseClass = `border-2 py-2 px-4 w-full border-black hover:bg-black hover:text-white text-center transition-all focus:bg-black focus:text-white active:scale-95 ${classAddon}`;
 </script>
 
 <button
-	class={`border-2 py-2 px-4 w-full border-black hover:bg-black hover:text-white text-center transition-all focus:bg-black focus:text-white active:scale-95 ${classAddon}`}
+	class={baseClass}
 	on:click={onClick}
 	{disabled}
 >
