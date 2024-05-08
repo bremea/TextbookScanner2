@@ -11,7 +11,7 @@ export interface Student extends StudentData {
 }
 
 export interface Course extends CourseData {
-	textbooks: TextbookData[];
+	textbooks: Textbook[];
 }
 
 export interface Textbook extends TextbookData {
