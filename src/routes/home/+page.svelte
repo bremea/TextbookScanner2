@@ -3,12 +3,14 @@
 	import Button from '$lib/components/input/Button.svelte';
 	import Input from '$lib/components/input/Input.svelte';
 	import Number from '$lib/components/input/Number.svelte';
-	import Password from '$lib/components/input/Password.svelte';
 	import Error from '$lib/components/misc/Error.svelte';
+	import Popup from '$lib/components/misc/Popup.svelte';
+	import type { StudentData } from '$lib/types';
 
 	let id = '';
 	let lastName = '';
 	let error: undefined | string;
+	let studentSearchResult: StudentData[] = [];
 
 	const lookup = async () => {
 		let url = '/api/lookup?id=' + id;
@@ -24,12 +26,35 @@
 		});
 
 		if (req.status == 200) {
-			// handle response
+			const data = (await req.json()) as StudentData[];
+
+			if (data.length == 0) {
+				error = 'No students found';
+			} else if (data.length == 1) {
+				goto(`/student/${data[0].id}`);
+			} else {
+				studentSearchResult = data;
+			}
 		} else {
 			error = (await req.json()).message;
 		}
 	};
 </script>
+
+{#if studentSearchResult.length > 1}
+	<Popup close={() => studentSearchResult = []}>
+		<h1 class="font-bold text-2xl mb-2">Select Student</h1>
+		<div class="space-y-2">
+			{#each studentSearchResult as student}
+				<Button
+					onClick={() => {
+						goto(`/student/${student.id}`);
+					}}>{student.firstName} {student.lastName} ({student.id})</Button
+				>
+			{/each}
+		</div>
+	</Popup>
+{/if}
 
 <div class="flex items-center justify-center h-screen w-screen">
 	<div class="w-96 space-y-4">
