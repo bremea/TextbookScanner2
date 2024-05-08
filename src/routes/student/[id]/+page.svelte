@@ -69,7 +69,7 @@
 			</div>
 
 			<div class="my-4 w-full flex items-center justify-center">
-				<p class="w-[400px]">
+				<p class="w-2/3">
 					This textbook is for course <span class="font-bold">{selectedTextbook.course}</span>. It
 					was last marked as
 					<span class="font-bold"
@@ -90,7 +90,7 @@
 			</p>
 
 			<div class="my-4 w-full flex items-center justify-center">
-				<Button class="flex justify-center w-[400px]" onClick={updateSelected}>
+				<Button class="flex justify-center w-2/3" onClick={updateSelected}>
 					<span class="mr-0.5">Manually mark as</span>
 					{#if selectedTextbook.status.returned}
 						<span class="font-bold text-red-500 flex items-center justify-center text-center">
@@ -103,25 +103,27 @@
 					{/if}
 				</Button>
 			</div>
-
-			<table class="w-[900px]">
-				<tr class="border-gray-500 border-b">
-					<th class="text-left px-4 py-2">Action</th>
-					<th class="text-left px-4 py-2">Scanner</th>
-					<th class="text-left px-4 py-2">Time</th>
-				</tr>
-				{#each selectedTextbookStatuses as status}
+			<div class="max-h-64 w-full overflow-auto">
+				<table class="w-full">
 					<tr class="border-gray-500 border-b">
-						<td class="text-left px-4 py-2"
-							>Marked as <span class="font-bold"
-								>{status.returned ? 'returned' : 'not returned'}</span
-							></td
-						>
-						<td class="text-left px-4 py-2">{status.scanner}</td>
-						<td class="text-left px-4 py-2">{new Date(status.updateTime).toLocaleString()}</td>
+						<th class="text-left px-4 py-2">Action</th>
+						<th class="text-left px-4 py-2">Scanner</th>
+						<th class="text-left px-4 py-2">Time</th>
 					</tr>
-				{/each}
-			</table>
+					{#each selectedTextbookStatuses as status}
+						<tr class="border-gray-500 border-b">
+							<td class="text-left px-4 py-2">
+								Marked as
+								<span class="font-bold">
+									{status.returned ? 'returned' : 'not returned'}
+								</span>
+							</td>
+							<td class="text-left px-4 py-2">{status.scanner}</td>
+							<td class="text-left px-4 py-2">{new Date(status.updateTime).toLocaleString()}</td>
+						</tr>
+					{/each}
+				</table>
+			</div>
 		</div>
 	</Popup>
 {/if}
