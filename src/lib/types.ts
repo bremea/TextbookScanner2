@@ -48,6 +48,12 @@ export interface TokenData {
 	name: string;
 }
 
+export interface ReturnRequest {
+	studentId: number;
+	barcode: number;
+	status: boolean;
+}
+
 export interface MiddlewareError {
 	code: number;
 	message: string;
