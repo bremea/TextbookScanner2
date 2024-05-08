@@ -15,7 +15,7 @@ export interface Course extends CourseData {
 }
 
 export interface Textbook extends TextbookData {
-	status: StudentTextbookStatus;
+	status: StudentTextbookStatus[];
 }
 
 export interface TextbookData extends RowDataPacket {

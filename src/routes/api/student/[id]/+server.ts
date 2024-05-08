@@ -56,13 +56,18 @@ export const GET: RequestHandler = async ({ request, params }) => {
 				[params.id, individualTextbookData.id]
 			);
 
-			const textbookStatus: StudentTextbookStatus = textbookStatusData[0] ?? {
-				studentId: params.id,
-				textbookId: individualTextbookData.id,
-				returned: false,
-				scanner: 'SERVER',
-				updateTime: new Date().toString()
-			};
+			const textbookStatus: StudentTextbookStatus[] =
+				textbookStatusData.length > 0
+					? textbookStatusData
+					: [
+							{
+								studentId: parseInt(params.id),
+								textbookId: individualTextbookData.id,
+								returned: false,
+								scanner: 'SERVER',
+								updateTime: new Date().toString()
+							} as StudentTextbookStatus
+						];
 
 			textbooks.push({ status: textbookStatus, ...individualTextbookData });
 		}
