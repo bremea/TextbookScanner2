@@ -48,22 +48,26 @@ export const GET: RequestHandler = async ({ request, params }) => {
 
 		if (textbookData.length == 0) break;
 
-		const [textbookStatusData] = await pool.query<StudentTextbookStatus[]>(
-			'SELECT * FROM studentTextbooks WHERE studentId = ? AND textbookId = ?',
-			[params.id, textbookData[0].id]
-		);
+		const textbooks: Textbook[] = [];
 
-		const textbookStatus: StudentTextbookStatus = textbookStatusData[0] ?? {
-			studentId: params.id,
-			textbookId: textbookData[0].id,
-			returned: false,
-			scanner: 'SERVER',
-			updateTime: new Date().toString()
-		};
+		for (const individualTextbookData of textbookData) {
+			const [textbookStatusData] = await pool.query<StudentTextbookStatus[]>(
+				'SELECT * FROM studentTextbooks WHERE studentId = ? AND textbookId = ?',
+				[params.id, individualTextbookData.id]
+			);
 
-		const textbook: Textbook = { status: textbookStatus, ...textbookData[0] };
+			const textbookStatus: StudentTextbookStatus = textbookStatusData[0] ?? {
+				studentId: params.id,
+				textbookId: individualTextbookData.id,
+				returned: false,
+				scanner: 'SERVER',
+				updateTime: new Date().toString()
+			};
 
-		const course: Course = { textbook, ...courseData[0] };
+			textbooks.push({ status: textbookStatus, ...individualTextbookData });
+		}
+
+		const course: Course = { textbooks, ...courseData[0] };
 		courses.push(course);
 	}
 
