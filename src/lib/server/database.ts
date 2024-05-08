@@ -2,7 +2,7 @@ import mysql from 'mysql2/promise';
 import { env } from '$env/dynamic/private';
 
 export const pool = mysql.createPool({
-	host: 'localhost',
+	host: env.MARIADB_HOST,
 	user: 'root',
 	password: env.MARIADB_ROOT_PASSWORD,
 	database: 'textbooks',
