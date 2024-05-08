@@ -42,16 +42,18 @@
 </script>
 
 {#if studentSearchResult.length > 1}
-	<Popup close={() => studentSearchResult = []}>
-		<h1 class="font-bold text-2xl mb-2">Select Student</h1>
-		<div class="space-y-2">
-			{#each studentSearchResult as student}
-				<Button
-					onClick={() => {
-						goto(`/student/${student.id}`);
-					}}>{student.firstName} {student.lastName} ({student.id})</Button
-				>
-			{/each}
+	<Popup close={() => (studentSearchResult = [])}>
+		<div>
+			<h1 class="font-bold text-2xl mb-2">Select Student</h1>
+			<div class="space-y-2">
+				{#each studentSearchResult as student}
+					<Button
+						onClick={() => {
+							goto(`/student/${student.id}`);
+						}}>{student.firstName} {student.lastName} ({student.id})</Button
+					>
+				{/each}
+			</div>
 		</div>
 	</Popup>
 {/if}
