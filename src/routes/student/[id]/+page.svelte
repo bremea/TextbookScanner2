@@ -22,32 +22,29 @@
 				<th class="text-left px-4 py-2">Course</th>
 				<th class="text-left px-4 py-2">Status</th>
 			</tr>
-			<tr class="border-gray-500 border-b bg-red-100">
-				<td class="text-left px-4 py-2">
-					<a class="text-blue-600 underline hover:no-underline" href="/textbooks/abc123"
-						>AP Stat 101 Textbook</a
-					></td
-				>
-				<td class="text-left px-4 py-2">251-02</td>
-				<td class="text-left px-4 py-2"
-					><span class="font-bold text-red-500 flex items-center"
-						><Close class="h-6 w-6 mr-2" />Not returned</span
-					></td
-				>
-			</tr>
-			<tr class="border-gray-500 border-b">
-				<td class="text-left px-4 py-2"
-					><a class="text-blue-600 underline hover:no-underline" href="/textbooks/abc123"
-						>AP United States Government Textbook</a
-					></td
-				>
-				<td class="text-left px-4 py-2">445-01</td>
-				<td class="text-left px-4 py-2"
-					><span class="font-bold text-green-600 flex items-center"
-						><Check class="h-6 w-6 mr-2" />Returned</span
-					></td
-				>
-			</tr>
+			{#each data.courses as course}
+				{#each course.textbooks as textbook}
+					<tr class={`border-gray-500 border-b ${textbook.status.returned ? '' : 'bg-red-100'}`}>
+						<td class="text-left px-4 py-2">
+							<a class="text-blue-600 underline hover:no-underline" href="/textbooks/abc123">
+								{textbook.name}
+							</a>
+						</td>
+						<td class="text-left px-4 py-2">{course.id}</td>
+						<td class="text-left px-4 py-2">
+							{#if textbook.status.returned}
+								<span class="font-bold text-green-600 flex items-center">
+									<Check class="h-6 w-6 mr-2" />Returned
+								</span>
+							{:else}
+								<span class="font-bold text-red-500 flex items-center">
+									<Close class="h-6 w-6 mr-2" />Not returned
+								</span>
+							{/if}
+						</td>
+					</tr>
+				{/each}
+			{/each}
 		</table>
 	</div>
 </div>
