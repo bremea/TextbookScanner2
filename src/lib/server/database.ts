@@ -4,7 +4,7 @@ import { env } from '$env/dynamic/private';
 export const pool = mysql.createPool({
 	host: 'localhost',
 	user: 'root',
-	password: env.DB_PASSWORD,
+	password: env.MARIADB_ROOT_PASSWORD,
 	database: 'textbooks',
 	waitForConnections: true,
 	connectionLimit: 10,
