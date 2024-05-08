@@ -5,11 +5,14 @@
 	import Password from '$lib/components/input/Password.svelte';
 	import Error from '$lib/components/misc/Error.svelte';
 
-	let name = "";
-	let password = "";
+	let name = '';
+	let password = '';
 	let error: undefined | string;
+	let waitingForLogin = false;
 
 	const login = async () => {
+		waitingForLogin = true;
+
 		const req = await fetch('/api/session', {
 			method: 'POST',
 			body: JSON.stringify({ name, password })
@@ -19,6 +22,7 @@
 			localStorage.setItem('token', (await req.json()).token);
 			goto('/home');
 		} else {
+			waitingForLogin = false;
 			error = (await req.json()).message;
 		}
 	};
@@ -32,6 +36,6 @@
 		{/if}
 		<Input bind:value={name} placeholder="Your Name" autocomplete="name" />
 		<Password bind:value={password} />
-		<Button onClick={login}>Login</Button>
+		<Button onClick={login} loading={waitingForLogin} disabled={waitingForLogin}>Login</Button>
 	</div>
 </div>

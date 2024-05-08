@@ -16,6 +16,8 @@
 
 	let error: string | undefined;
 	let loading = true;
+	let loadingTextbook = false;
+	let waitingForNewStatus = false;
 	let selectedTextbook: Textbook | undefined;
 	let selectedTextbookStatuses: StudentTextbookStatus[] = [];
 	let barcode: string = '';
@@ -44,23 +46,32 @@
 	};
 
 	const openTextbookDetails = async (textbook: Textbook) => {
-		const res = await fetchReturnLog(textbook.id);
-		if (res) selectedTextbook = textbook;
+		loadingTextbook = true;
+		selectedTextbook = textbook;
+
+		await fetchReturnLog(textbook.id);
+		loadingTextbook = false;
 	};
 
 	const refreshData = async () => {
-		const req = await fetch(`/api/student/${student.id}`, {
+		const req = await fetch(`/api/student/${data.id}`, {
 			headers: { Authorization: localStorage.getItem('token')! }
 		});
 
 		if (req.status == 200) {
 			student = await req.json();
+			waitingForNewStatus = false;
+			selectedTextbook = undefined;
+			loading = false;
 		} else {
-			error = await req.text();
+			error = (await req.json()).message;
+			selectedTextbook = undefined;
+			waitingForNewStatus = false;
 		}
 	};
 
 	const updateStatus = async (id: number, status: boolean) => {
+		waitingForNewStatus = true;
 		const req = await fetch(`/api/student/${student.id}/textbooks/${id}/return`, {
 			method: 'PATCH',
 			body: JSON.stringify({ studentId: student.id, status }),
@@ -68,14 +79,15 @@
 		});
 
 		if (req.status == 200) {
-			selectedTextbook = undefined;
 			refreshData();
 		} else {
-			error = await req.text();
+			waitingForNewStatus = false;
+			error = (await req.json()).message;
 		}
 	};
 
 	const fetchTextbook = async () => {
+		waitingForNewStatus = true;
 		const req = await fetch(`/api/student/${student.id}/textbooks/lookup?barcode=${barcode}`, {
 			method: 'GET',
 			headers: { Authorization: localStorage.getItem('token')! }
@@ -88,6 +100,7 @@
 			updateStatus(textbook.id, !textbook.status.returned);
 		} else {
 			error = (await req.json()).message;
+			waitingForNewStatus = false;
 		}
 	};
 
@@ -97,19 +110,7 @@
 		}
 	};
 
-	onMount(async () => {
-		const req = await fetch(`/api/student/${data.id}`, {
-			headers: { Authorization: localStorage.getItem('token')! }
-		});
-
-		if (req.status == 200) {
-			student = (await req.json()) as Student;
-			loading = false;
-		} else {
-			console.log(await req.text());
-			error = await req.text();
-		}
-	});
+	onMount(refreshData);
 </script>
 
 {#if loading}
@@ -175,27 +176,35 @@
 						{/if}
 					</Button>
 				</div>
-				<div class="max-h-64 w-full overflow-auto">
-					<table class="w-full">
-						<tr class="border-gray-500 border-b">
-							<th class="text-left px-4 py-2">Action</th>
-							<th class="text-left px-4 py-2">Scanner</th>
-							<th class="text-left px-4 py-2">Time</th>
-						</tr>
-						{#each selectedTextbookStatuses as status}
+
+				{#if loadingTextbook}
+					<div class="w-full h-64 flex items-center justify-center">
+						<Loader />
+					</div>
+				{:else}
+					<div class="h-64 w-full overflow-auto">
+						<table class="w-full">
 							<tr class="border-gray-500 border-b">
-								<td class="text-left px-4 py-2">
-									Marked as
-									<span class="font-bold">
-										{status.returned ? 'returned' : 'not returned'}
-									</span>
-								</td>
-								<td class="text-left px-4 py-2">{status.scanner}</td>
-								<td class="text-left px-4 py-2">{new Date(status.updateTime).toLocaleString()}</td>
+								<th class="text-left px-4 py-2">Action</th>
+								<th class="text-left px-4 py-2">Scanner</th>
+								<th class="text-left px-4 py-2">Time</th>
 							</tr>
-						{/each}
-					</table>
-				</div>
+							{#each selectedTextbookStatuses as status}
+								<tr class="border-gray-500 border-b">
+									<td class="text-left px-4 py-2">
+										Marked as
+										<span class="font-bold">
+											{status.returned ? 'returned' : 'not returned'}
+										</span>
+									</td>
+									<td class="text-left px-4 py-2">{status.scanner}</td>
+									<td class="text-left px-4 py-2">{new Date(status.updateTime).toLocaleString()}</td
+									>
+								</tr>
+							{/each}
+						</table>
+					</div>
+				{/if}
 			</div>
 		</Popup>
 	{/if}
@@ -214,13 +223,18 @@
 			{#if error != undefined}
 				<Error>{error}</Error>
 			{/if}
-			<Input
-				placeholder="Enter barcode..."
-				bindTo={barcodeEntry}
-				autofocus
-				onInput={processBarcodeInput}
-				bind:value={barcode}
-			/>
+			<div class="flex items-center">
+				<Input
+					placeholder="Enter barcode..."
+					bindTo={barcodeEntry}
+					autofocus
+					onInput={processBarcodeInput}
+					bind:value={barcode}
+				/>
+				<Button class="w-min ml-2" loading={waitingForNewStatus} disabled={waitingForNewStatus}
+					>Go</Button
+				>
+			</div>
 			<table class="w-[900px]">
 				<tr class="border-gray-500 border-b">
 					<th class="text-left px-4 py-2">Title</th>

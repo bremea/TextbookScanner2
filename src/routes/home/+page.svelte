@@ -11,8 +11,11 @@
 	let lastName = '';
 	let error: undefined | string;
 	let studentSearchResult: StudentData[] = [];
+	let isLookingUp = false;
 
 	const lookup = async () => {
+		isLookingUp = true;
+
 		let url = '/api/student/lookup?id=' + id;
 		if (id == null || id == undefined || id.length == 0) {
 			url = '/api/student/lookup?lastName=' + lastName;
@@ -26,6 +29,7 @@
 		});
 
 		if (req.status == 200) {
+			isLookingUp = false;
 			const data = (await req.json()) as StudentData[];
 
 			if (data.length == 0) {
@@ -36,6 +40,7 @@
 				studentSearchResult = data;
 			}
 		} else {
+			isLookingUp = false;
 			error = (await req.json()).message;
 		}
 	};
@@ -67,6 +72,6 @@
 		<Number max={999999} placeholder="Student ID" bind:value={id} />
 		<p class="w-full opacity-50 text-center text-sm my-2">or</p>
 		<Input placeholder="Student last name" bind:value={lastName} />
-		<Button onClick={lookup}>Lookup</Button>
+		<Button onClick={lookup} loading={isLookingUp} disabled={isLookingUp}>Lookup</Button>
 	</div>
 </div>
