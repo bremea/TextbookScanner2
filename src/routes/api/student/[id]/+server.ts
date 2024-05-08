@@ -53,7 +53,7 @@ export const GET: RequestHandler = async ({ request, params }) => {
 
 		for (const individualTextbookData of textbookData) {
 			const [textbookStatusData] = await pool.query<StudentTextbookStatusData[]>(
-				'SELECT * FROM studentTextbooks WHERE studentId = ? AND textbookId = ? ORDER BY updateTime',
+				'SELECT * FROM studentTextbooks WHERE studentId = ? AND textbookId = ? ORDER BY updateTime DESC',
 				[params.id, individualTextbookData.id]
 			);
 

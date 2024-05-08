@@ -5,7 +5,7 @@ export const ssr = false;
 
 export const load = async ({ params }): Promise<Student> => {
 	const req = await fetch(`/api/student/${params.id}`, {
-		headers: { Authentication: localStorage.getItem('token')! }
+		headers: { Authorization: localStorage.getItem('token')! }
 	});
 
 	if (req.status == 200) {
