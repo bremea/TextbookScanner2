@@ -14,6 +14,10 @@ export interface Course extends CourseData {
 	textbook?: TextbookData;
 }
 
+export interface Textbook extends TextbookData {
+	returned: boolean;
+}
+
 export interface TextbookData extends RowDataPacket {
 	id: number;
 	name: string;
@@ -30,6 +34,13 @@ export interface CourseData extends RowDataPacket {
 export interface StudentCourses extends RowDataPacket {
 	studentId: number;
 	courseId: number;
+}
+
+export interface StudentTextbooks extends RowDataPacket {
+	studentId: number;
+	textbookId: number;
+	returned: boolean;
+	scanner: string;
 }
 
 export interface TokenData {
