@@ -6,6 +6,7 @@
 	import type { Student, StudentTextbookStatus, Textbook } from '$lib/types';
 	import Check from 'svelte-material-icons/Check.svelte';
 	import Close from 'svelte-material-icons/Close.svelte';
+	import ArrowLeft from 'svelte-material-icons/ArrowLeft.svelte';
 	import { onMount } from 'svelte';
 
 	export let data: Student;
@@ -180,6 +181,9 @@
 
 <div class="flex items-center justify-center h-screen w-screen">
 	<div class="space-y-4">
+		<a class="text-blue-600 underline hover:no-underline flex items-center" href="/home">
+			<ArrowLeft class="mr-1" />Go back
+		</a>
 		<h1 class="font-bold text-2xl">{data.firstName} {data.lastName}</h1>
 		<p>ID: {data.id}</p>
 		{#if error != undefined}
