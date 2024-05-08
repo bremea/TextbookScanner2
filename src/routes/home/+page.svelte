@@ -13,9 +13,9 @@
 	let studentSearchResult: StudentData[] = [];
 
 	const lookup = async () => {
-		let url = '/api/lookup?id=' + id;
+		let url = '/api/student/lookup?id=' + id;
 		if (id == null || id == undefined || id.length == 0) {
-			url = '/api/lookup?lastName=' + lastName;
+			url = '/api/student/lookup?lastName=' + lastName;
 		}
 
 		const req = await fetch(url, {
