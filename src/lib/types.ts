@@ -15,7 +15,7 @@ export interface Course extends CourseData {
 }
 
 export interface Textbook extends TextbookData {
-	returned: boolean;
+	status: StudentTextbookStatus;
 }
 
 export interface TextbookData extends RowDataPacket {
@@ -36,11 +36,12 @@ export interface StudentCourses extends RowDataPacket {
 	courseId: number;
 }
 
-export interface StudentTextbooks extends RowDataPacket {
+export interface StudentTextbookStatus extends RowDataPacket {
 	studentId: number;
 	textbookId: number;
 	returned: boolean;
 	scanner: string;
+	updateTime: string;
 }
 
 export interface TokenData {

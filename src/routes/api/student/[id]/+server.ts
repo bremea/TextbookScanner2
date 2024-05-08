@@ -8,6 +8,8 @@ import type {
 	Student,
 	StudentCourses,
 	StudentData,
+	StudentTextbookStatus,
+	Textbook,
 	TextbookData
 } from '$lib/types';
 
@@ -44,7 +46,22 @@ export const GET: RequestHandler = async ({ request, params }) => {
 			[studentCourse.courseId]
 		);
 
-		const textbook = textbookData.length == 0 ? undefined : textbookData[0];
+		if (textbookData.length == 0) break;
+
+		const [textbookStatusData] = await pool.query<StudentTextbookStatus[]>(
+			'SELECT * FROM studentTextbooks WHERE studentId = ? AND textbookId = ?',
+			[params.id, textbookData[0].id]
+		);
+
+		const textbookStatus: StudentTextbookStatus = textbookStatusData[0] ?? {
+			studentId: params.id,
+			textbookId: textbookData[0].id,
+			returned: false,
+			scanner: 'SERVER',
+			updateTime: new Date().toString()
+		};
+
+		const textbook: Textbook = { status: textbookStatus, ...textbookData[0] };
 
 		const course: Course = { textbook, ...courseData[0] };
 		courses.push(course);
