@@ -1,4 +1,6 @@
-export interface StudentData {
+import type { RowDataPacket } from 'mysql2';
+
+export interface StudentData extends RowDataPacket {
 	firstName: string;
 	lastName: string;
 	id: string;
@@ -12,7 +14,7 @@ export interface Course extends CourseData {
 	textbook: TextbookData;
 }
 
-export interface TextbookData {
+export interface TextbookData extends RowDataPacket {
 	id: number;
 	name: string;
 	isbn13?: number;
@@ -20,12 +22,12 @@ export interface TextbookData {
 	course: number;
 }
 
-export interface CourseData {
+export interface CourseData extends RowDataPacket {
 	id: number;
 	name: string;
 }
 
-export interface StudentCourses {
+export interface StudentCourses extends RowDataPacket {
 	studentId: number;
 	courseId: number;
 }
