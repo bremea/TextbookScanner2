@@ -5,6 +5,7 @@
 	import Number from '$lib/components/input/Number.svelte';
 	import Error from '$lib/components/misc/Error.svelte';
 	import Popup from '$lib/components/misc/Popup.svelte';
+	import Cog from 'svelte-material-icons/Cog.svelte';
 	import type { StudentData } from '$lib/types';
 
 	let id = '';
@@ -12,6 +13,7 @@
 	let error: undefined | string;
 	let studentSearchResult: StudentData[] = [];
 	let isLookingUp = false;
+	let dataPopupOpened = false;
 
 	const lookup = async () => {
 		isLookingUp = true;
@@ -63,7 +65,25 @@
 	</Popup>
 {/if}
 
-<div class="flex items-center justify-center h-screen w-screen">
+{#if dataPopupOpened}
+	<Popup close={() => (dataPopupOpened = false)}>
+		<a
+			class="text-blue-600 underline hover:no-underline flex items-center"
+			href="/api/data/export"
+			target="_blank"
+		>
+			Export all data
+		</a>
+	</Popup>
+{/if}
+
+<div class="flex items-center justify-center h-screen w-screen relative">
+	<Button
+		class="border-opacity-0 absolute right-6 top-6 w-min"
+		onClick={() => (dataPopupOpened = true)}
+	>
+		<Cog class="w-6 h-6" />
+	</Button>
 	<div class="w-96 space-y-4">
 		<h1 class="font-bold text-2xl">Student Lookup</h1>
 		{#if error != undefined}
