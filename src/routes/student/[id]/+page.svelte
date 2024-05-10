@@ -106,6 +106,7 @@
 
 	const processBarcodeInput = () => {
 		if (barcode.length >= 13) {
+			barcode = barcode.substring(0, 13);
 			fetchTextbook();
 		}
 	};
