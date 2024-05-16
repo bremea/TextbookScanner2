@@ -86,12 +86,14 @@
 	</Button>
 	<div class="w-96 space-y-4">
 		<h1 class="font-bold text-2xl">Student Lookup</h1>
-		{#if error != undefined}
-			<Error>{error}</Error>
-		{/if}
-		<Number max={999999} placeholder="Student ID" bind:value={id} />
-		<p class="w-full opacity-50 text-center text-sm my-2">or</p>
-		<Input placeholder="Student last name" bind:value={lastName} />
-		<Button onClick={lookup} loading={isLookingUp} disabled={isLookingUp}>Lookup</Button>
+		<form on:submit|preventDefault class="w-full space-y-4">
+			{#if error != undefined}
+				<Error>{error}</Error>
+			{/if}
+			<Number max={999999} placeholder="Student ID" bind:value={id} />
+			<p class="w-full opacity-50 text-center text-sm my-2">or</p>
+			<Input placeholder="Student last name" bind:value={lastName} />
+			<Button onClick={lookup} loading={isLookingUp} disabled={isLookingUp}>Lookup</Button>
+		</form>
 	</div>
 </div>

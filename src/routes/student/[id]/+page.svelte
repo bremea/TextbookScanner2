@@ -224,7 +224,7 @@
 			{#if error != undefined}
 				<Error>{error}</Error>
 			{/if}
-			<div class="flex items-center">
+			<form on:submit|preventDefault class="flex items-center">
 				<Input
 					placeholder="Enter barcode..."
 					bindTo={barcodeEntry}
@@ -235,7 +235,7 @@
 				<Button class="w-min ml-2" loading={waitingForNewStatus} disabled={waitingForNewStatus}
 					>Go</Button
 				>
-			</div>
+			</form>
 			<table class="w-[900px]">
 				<tr class="border-gray-500 border-b">
 					<th class="text-left px-4 py-2">Title</th>
