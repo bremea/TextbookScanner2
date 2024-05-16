@@ -7,6 +7,7 @@
 	import Popup from '$lib/components/misc/Popup.svelte';
 	import Cog from 'svelte-material-icons/Cog.svelte';
 	import type { StudentData } from '$lib/types';
+	import { enhance } from '$app/forms';
 
 	let id = '';
 	let lastName = '';
@@ -67,13 +68,43 @@
 
 {#if dataPopupOpened}
 	<Popup close={() => (dataPopupOpened = false)}>
-		<a
-			class="text-blue-600 underline hover:no-underline flex items-center"
-			href="/api/data/export"
-			target="_blank"
-		>
-			Export all data
-		</a>
+		<div class="w-full h-full flex flex-col items-center justify-center space-y-4">
+			<a
+				class="text-blue-600 underline hover:no-underline flex items-center"
+				href="/api/data/export"
+				target="_blank"
+			>
+				Export all data
+			</a>
+			<div class="border-black border-t-2 py-4">
+				<p class="font-bold">Student CSV Import</p>
+				<form
+					class="flex w-full justify-between items-center text-sm"
+					method="post"
+					action="/api/data/import/students"
+					use:enhance
+					enctype="multipart/form-data"
+				>
+					<input type="file" id="file" name="fileToUpload" accept=".csv" required />
+
+					<Button class="w-min text-sm">Import</Button>
+				</form>
+			</div>
+			<div class="border-black border-t-2 py-4">
+				<p class="font-bold">Textbook CSV Import</p>
+				<form
+					class="flex w-full justify-between items-center text-sm"
+					method="post"
+					action="/api/data/import/students"
+					use:enhance
+					enctype="multipart/form-data"
+				>
+					<input type="file" id="file" name="fileToUpload" accept=".csv" required />
+
+					<Button class="w-min text-sm">Import</Button>
+				</form>
+			</div>
+		</div>
 	</Popup>
 {/if}
 
