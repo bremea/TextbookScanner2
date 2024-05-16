@@ -51,14 +51,15 @@
 
 {#if studentSearchResult.length > 1}
 	<Popup close={() => (studentSearchResult = [])}>
-		<div>
+		<div class="w-[400px]">
 			<h1 class="font-bold text-2xl mb-2">Select Student</h1>
 			<div class="space-y-2">
 				{#each studentSearchResult as student}
 					<Button
+						class="w-full"
 						onClick={() => {
 							goto(`/student/${student.id}`);
-						}}>{student.firstName} {student.lastName} ({student.id})</Button
+						}}>{student.firstName} {student.lastName} ({student.homeroom})</Button
 					>
 				{/each}
 			</div>

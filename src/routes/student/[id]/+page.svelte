@@ -220,7 +220,7 @@
 				<ArrowLeft class="mr-1" />Go back
 			</a>
 			<h1 class="font-bold text-2xl">{student.firstName} {student.lastName}</h1>
-			<p>ID: {student.id}</p>
+			<p>ID: {student.id}<br />HR: {student.homeroom}</p>
 			{#if error != undefined}
 				<Error>{error}</Error>
 			{/if}

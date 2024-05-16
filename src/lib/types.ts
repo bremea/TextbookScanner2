@@ -4,6 +4,7 @@ export interface StudentData extends RowDataPacket {
 	firstName: string;
 	lastName: string;
 	id: string;
+	homeroom: string;
 }
 
 export interface Student extends StudentData {
